@@ -1,4 +1,4 @@
-import React, { act, createContext, useState } from 'react'
+import React, { useState } from 'react'
 import { NavLink } from 'react-router'
 import { useLocation, useNavigate } from 'react-router';
 import { useContext } from 'react';
@@ -17,7 +17,30 @@ const Product_Details = () => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedQuantity, setSelectedQuantity] = useState(1);
   const [activeBtn, setActiveBtn] = useState("Ratings & Reviews");
+  const [faqOpenStates, setFaqOpenStates] = useState([false, false, false, false, false]);
 
+  // Product details data
+  const productSpecs = {
+    material: "100% Organic Cotton",
+    madeFrom: "Ethically sourced materials",
+    manufacturing: "Made in India",
+    type: "Casual T-Shirt",
+    gender: "Unisex",
+    fit: "Regular Fit",
+    careInstructions: "Machine wash cold, tumble dry low",
+    weight: "180 GSM",
+    fabricType: "Jersey Knit",
+    origin: "Handcrafted in Jaipur",
+    sustainability: "Eco-friendly dyes used",
+    certifications: "GOTS Certified Organic",
+    features: [
+      "Breathable fabric",
+      "Soft and comfortable",
+      "Durable stitching",
+      "Tagless for comfort",
+      "Moisture-wicking properties"
+    ]
+  };
 
   const handleSize = (size) => {
     setSelectedSize(size);
@@ -43,27 +66,20 @@ const Product_Details = () => {
       setSelectedQuantity(prevState => prevState - 1);
     }
   }
-  const handleAddToCart = () => {
 
+  const handleAddToCart = () => {
     if (selectedSize === "") {
-      function showToastMessage() {
-        toast.error("select the size!", {
-          position: "top-right",
-          color: "red"
-        });
-      };
-      showToastMessage();
-      console.log("react")
+      toast.error("Select the size!", {
+        position: "top-right",
+        color: "red"
+      });
     }
 
     if (selectedColor === "") {
-      function showToastMessage() {
-        toast.error("select the color!", {
-          position: "top-right",
-          color: "red"
-        });
-      };
-      showToastMessage();
+      toast.error("Select the color!", {
+        position: "top-right",
+        color: "red"
+      });
     }
 
     const colorMap = {
@@ -80,21 +96,94 @@ const Product_Details = () => {
         price: discountedCalculator(productDetails.price, productDetails.discount),
         title: productDetails.title,
         img: productDetails.img,
+        specs: productSpecs
       };
       setCart((prevCart) => [...prevCart, newItem]);
       navigate('/product-details/cart');
     }
-
   };
 
   const handleBtnSelector = (btnName) => {
     setActiveBtn(btnName);
   }
 
+  const faqData = [
+    {
+      question: "What is the product made of?",
+      answer: `This ${productDetails.title} is crafted from ${productSpecs.material}, ensuring both comfort and durability.`
+    },
+    {
+      question: "How do I determine my size?",
+      answer: "We recommend referring to our size chart available on the product page. It provides detailed measurements to help you choose the perfect fit."
+    },
+    {
+      question: "What is your return policy?",
+      answer: "We offer a 30-day return policy. If you're not completely satisfied with your purchase, you can return it for a full refund or exchange."
+    },
+    {
+      question: "How long will shipping take?",
+      answer: "Shipping times vary depending on your location. Typically, orders are processed within 1-2 business days, and standard shipping usually takes 3-5 business days."
+    },
+    {
+      question: "Do you ship internationally?",
+      answer: "Yes, we ship to most countries worldwide. Shipping costs and delivery times for international orders vary by destination."
+    }
+  ];
+
+  const toggleFAQ = (index) => {
+    const newFaqOpenStates = [...faqOpenStates];
+    newFaqOpenStates[index] = !newFaqOpenStates[index];
+    setFaqOpenStates(newFaqOpenStates);
+  };
+
+  const renderProductDetails = () => (
+    <div className="product-specs px-5 py-5">
+      <h2 className="text-2xl font-bold mb-4">Product Specifications</h2>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <h3 className="font-semibold">Material</h3>
+          <p>{productSpecs.material}</p>
+        </div>
+        <div>
+          <h3 className="font-semibold">Type</h3>
+          <p>{productSpecs.type}</p>
+        </div>
+        <div>
+          <h3 className="font-semibold">Fit</h3>
+          <p>{productSpecs.fit}</p>
+        </div>
+        <div>
+          <h3 className="font-semibold">Weight</h3>
+          <p>{productSpecs.weight}</p>
+        </div>
+        <div>
+          <h3 className="font-semibold">Manufacturing</h3>
+          <p>{productSpecs.manufacturing}</p>
+        </div>
+        <div>
+          <h3 className="font-semibold">Sustainability</h3>
+          <p>{productSpecs.sustainability}</p>
+        </div>
+      </div>
+      <div className="mt-6">
+        <h3 className="font-semibold text-lg mb-2">Key Features</h3>
+        <ul className="list-disc pl-5">
+          {productSpecs.features.map((feature, index) => (
+            <li key={index} className="mb-1">{feature}</li>
+          ))}
+        </ul>
+      </div>
+      <div className="mt-6">
+        <h3 className="font-semibold text-lg mb-2">Care Instructions</h3>
+        <p>{productSpecs.careInstructions}</p>
+      </div>
+    </div>
+  );
+
   return (
     <>
-      <div className="container mx-auto">
-        <div className="page-router-links flex gap-2 border-t py-7 px-5">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="page-router-links flex flex-wrap gap-2 border-t py-7 px-5">
           <NavLink to="/" className="font-thin text-[#00000099] flex gap-1">
             Home
             <img src="images/svg/half-right-arrow.svg" alt="" />
@@ -111,38 +200,35 @@ const Product_Details = () => {
             Tshirt
           </NavLink>
         </div>
-        <div className="product-details-wrap flex justify-between items-center gap-10 pb-24">
-
-          <div className='w-1/2 flex'>
-            <div className='side-imgs flex flex-col justify-between gap-2 w-1/3 mr-2'>
+        <div className="product-details-wrap flex flex-col lg:flex-row justify-between items-center gap-10 pb-24">
+          <div className='w-full lg:w-1/2 flex flex-col lg:flex-row gap-5'>
+            <div className='side-imgs flex flex-row lg:flex-col justify-between gap-2 w-full lg:w-1/3 mr-2'>
               <button>
-                <img src={productDetails.subimg.img1} alt="" className='  w-full rounded-3xl' />
+                <img src={productDetails.subimg.img1} alt="" className='w-full rounded-3xl' />
               </button>
               <button>
-                <img src={productDetails.subimg.img2} alt="" className='  w-full rounded-3xl' />
+                <img src={productDetails.subimg.img2} alt="" className='w-full rounded-3xl' />
               </button>
               <button>
-                <img src={productDetails.subimg.img3} alt="" className='  w-full rounded-3xl' />
+                <img src={productDetails.subimg.img3} alt="" className='w-full rounded-3xl' />
               </button>
             </div>
             <div className='primary-img w-full'>
               <img src={productDetails.img} alt="" className='w-full h-full rounded-3xl' />
             </div>
           </div>
-          <div className='w-1/2'>
+          <div className='w-full lg:w-1/2'>
             <div className="product-title mb-2">
               <h1 className='font-santoshi font-extrabold text-4xl'>{productDetails.title}</h1>
             </div>
             <div className="rating flex mb-1">
               {Array.from({ length: 5 }, (_, i) => (
                 <span className='' key={i}>
-
                   {i < Math.floor(productDetails.rating) ? (
                     <img src="/images/svg/rating-star.svg" alt="" className='h-5 w-5 ' />
                   ) : i === Math.floor(productDetails.rating) && productDetails.rating % 1 !== 0 ? (
                     <img src="/images/svg/half-star.svg" alt="" className='h-5 w-5 ' />
                   ) : (
-
                     ""
                   )}
                 </span>
@@ -197,8 +283,8 @@ const Product_Details = () => {
               </div>
             </div>
 
-            <div className="quantity-add-to-cart flex gap-3 pt-5">
-              <div className="quantity-btn-wrap flex justify-between bg-[#F0F0F0] rounded-full w-2/5 py-4 px-5">
+            <div className="quantity-add-to-cart flex flex-col sm:flex-row gap-3 pt-5">
+              <div className="quantity-btn-wrap flex justify-between bg-[#F0F0F0] rounded-full w-full sm:w-2/5 py-4 px-5">
                 <button className='minus-btn' onClick={handleQuantityDecr}><img src="images/svg/minus.svg" alt="" /></button>
                 {selectedQuantity}
                 <button className='plus-btn' onClick={handleQuantityIncr}><img src="images/svg/plus.svg" alt="" /></button>
@@ -209,7 +295,7 @@ const Product_Details = () => {
           </div>
         </div>
         <div className="details-review-faq pb-40">
-          <div className='details-selector-btn flex justify-around items-center'>
+          <div className='details-selector-btn flex flex-wrap justify-around items-center'>
             {["Product Details", "Ratings & Reviews", "FAQs"].map((btnName) => (
               <button
                 key={btnName}
@@ -225,7 +311,30 @@ const Product_Details = () => {
             (<Product_Review productDetails={productDetails} />) : ''
           }
           {/* faqs */}
-
+          {activeBtn === "FAQs" ?
+            (<div className="faq-content px-5 py-5">
+              {faqData.map((faq, index) => (
+                <div key={index} className="faq-item mb-3 border-b border-gray-200 pb-3">
+                  <button
+                    onClick={() => toggleFAQ(index)}
+                    className="faq-question flex justify-between items-center w-full text-left py-2"
+                  >
+                    <h4 className="font-semibold text-lg ">{faq.question}</h4>
+                    <img
+                      src={faqOpenStates[index] ? "images/svg/minus.svg" : "images/svg/plus.svg"}
+                      alt={faqOpenStates[index] ? "Close" : "Open"}
+                      className="h-5 w-5"
+                    />
+                  </button>
+                  {faqOpenStates[index] && (
+                    <div className="faq-answer mt-2 font-thin text-[#0006] pb-2">
+                      <p>{faq.answer}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>) : ''
+          }
         </div>
       </div >
     </>

@@ -10,11 +10,10 @@ const Product_Review = ({ productDetails }) => {
         }
     }, [productDetails]);
 
-
     return (
-        <section>
-            <div className="title-bar flex justify-between pt-5">
-                <div className="total-reviews flex items-center gap-1">
+        <section className="px-4 sm:px-6 lg:px-8">
+            <div className="title-bar flex flex-col sm:flex-row justify-between pt-5">
+                <div className="total-reviews flex items-center gap-1 mb-4 sm:mb-0">
                     <h2 className="font-semibold">All Reviews</h2>
                     <span className='font-grey text-lg'>({reviews.length})</span>
                 </div>
@@ -42,20 +41,18 @@ const Product_Review = ({ productDetails }) => {
                             key={index}
                             className="review-card border border-gray-200 rounded-2xl p-3"
                             style={{
-                                flex: '0 0 calc(50% - 10px)',
+                                flex: '0 0 calc(100% - 10px)',
                                 marginBottom: '10px',
                             }}
                         >
                             <div className="rating flex mb-1">
                                 {Array.from({ length: 5 }, (_, i) => (
                                     <span className='' key={i}>
-
                                         {i < Math.floor(item.rating) ? (
                                             <img src="/images/svg/rating-star.svg" alt="" className='h-5 w-5 ' />
                                         ) : i === Math.floor(item.rating) && item.rating % 1 !== 0 ? (
                                             <img src="/images/svg/half-star.svg" alt="" className='h-5 w-5 ' />
                                         ) : (
-
                                             ""
                                         )}
                                     </span>
@@ -66,15 +63,12 @@ const Product_Review = ({ productDetails }) => {
                             <div className="review-date">{item.reviewDate}</div>
                         </div>
                     ))
-
                 ) : (
                     <div className='no-reviews flex flex-col justify-center items-center'>
-                        <img src='/images/svg/man.svg' className='w-1/4 mb-4'  alt='' />
+                        <img src='/images/svg/man.svg' className='w-1/4 mb-4' alt='' />
                         <h3 className=''>"Be the First to Leave a Review"</h3>
                     </div>
                 )}
-
-
             </div>
         </section>
     );

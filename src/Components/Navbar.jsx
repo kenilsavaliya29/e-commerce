@@ -46,7 +46,7 @@ const Navbar = () => {
       <nav className=''>
         <div className='container mx-auto'>
           <div className='nav-wrapper '>
-            <div className="header-upper flex justify-between items-center gap-10 py-5">
+            <div className="header-upper flex justify-between items-center gap-10 py-5 px-5">
 
               <div className={`hamburger-menu-overlay ${hamburgerMenu ? 'block' : 'hidden'} `}></div>
               <div ref={hamburgerMenuRef} className={`hamburger-menu`}>
